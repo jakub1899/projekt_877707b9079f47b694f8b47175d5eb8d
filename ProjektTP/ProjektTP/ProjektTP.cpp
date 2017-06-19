@@ -33,7 +33,11 @@ int y;
 int xeu;      //coordinates for ending of upper arm
 int yeu;
 
-
+int speed ;         //speed of arm
+int adown ;
+int aup ;
+int upu ;
+int upl ;
 
 /*
 //Points 
@@ -117,36 +121,36 @@ void start(HDC hdc)
 	 PaintSquares(hdc);
 }
 
-void lowerupmotion(int speed, int adown, int aup)
+void lowerupmotion(int speed, int adown, int aup,int upl)
 {
-	adown = 270+speed;
-	angleup = 45+aup;
-	x = xbl + RL*cos(adown*rad);
-	y = ybl + RL*sin(adown*rad);
+	anglelow = 270+speed+upl;
+	angleup = aup;
+	x = xbl + RL*cos(anglelow*rad);
+	y = ybl + RL*sin(anglelow*rad);
 }
 
-void lowerdownmotion(int speed, int adown, int aup)
+void lowerdownmotion(int speed, int adown, int aup,int upl)
 {
-	adown = 270 - speed;
-	angleup = 45 + aup;
-	x = xbl + RL*cos(adown*rad);
-	y = ybl + RL*sin(adown*rad);
+	anglelow = 270 - speed+upl;
+	angleup = aup;
+	x = xbl + RL*cos(anglelow*rad);
+	y = ybl + RL*sin(anglelow*rad);
 }
 
-void upperdownmotion(int speed, int adown, int aup)
+void upperdownmotion(int speed, int adown, int aup,int upu)
 {
-	anglelow = 270 + adown;
-	aup = 45 + speed;
-	xeu = x + RU*cos(aup*rad);
-	yeu = y + RU*sin(aup*rad);
+	anglelow = adown;
+	angleup = 45 + speed +upu;
+	xeu = x + RU*cos(angleup*rad);
+	yeu = y + RU*sin(angleup*rad);
 }
 
-void upperupmotion(int speed,int adown,int aup)
+void upperupmotion(int speed,int adown,int aup,int upu)
 {
-	anglelow = 270 + adown;
-	aup = 45 - speed;
-	xeu= x + RU*cos(aup*rad);
-	yeu = y + RU*sin(aup*rad);
+	anglelow = adown;
+	angleup = 45 - speed+upu;
+	xeu= x + RU*cos(angleup*rad);
+	yeu = y + RU*sin(angleup*rad);
 }
 
 
@@ -365,9 +369,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     HDC hdc;
-    int speed=1;         //speed of arm
-    int adown=anglelow;
-    int aup=angleup;
+    speed=1;         
+    adown=anglelow;
+    aup=angleup;
+    upu = 0;
+    upl = 0;
     switch (message)
     {
     case WM_COMMAND:
@@ -383,37 +389,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 DestroyWindow(hWnd);
                 break;
 	    case ID_BUTTON1:
-		lowerupmotion(speed,aup);
+		upl++;
+		lowerupmotion(speed,adown,aup,upl);
 		repaintWindow(hWnd, hdc, ps, &drawArea);
 		break;
-	case ID_BUTTON2:
-		lowerdownmotion(speed,aup);
+	    case ID_BUTTON2:
+		upl++;
+		lowerdownmotion(speed, adown, aup,upl);
 		repaintWindow(hWnd, hdc, ps, &drawArea);
 		break;
-	case ID_BUTTON3:
-		upperupmotion(speed,adown);
+	    case ID_BUTTON3:
+		upu++;
+		upperupmotion(speed, adown, aup,upu);
 		repaintWindow(hWnd, hdc, ps, &drawArea);
 		break;
-	case ID_BUTTON4:
-		upperdownmotion(speed,adown);
+	    case ID_BUTTON4:
+		upu++;
+		upperdownmotion(speed, adown, aup,upu);
 		repaintWindow(hWnd, hdc, ps, &drawArea);
 		break;
-        case ID_BUTTON5:
+            case ID_BUTTON5:
 	        speed++;
 		break;
-	case ID_BUTTON6:
+	    case ID_BUTTON6:
 		speed--;
 		break;
-	case ID_BUTTON7:
+	    case ID_BUTTON7:
 		//Record(hdc);//record
 		break;
-	case ID_BUTTON8:
+	    case ID_BUTTON8:
 		//auto
 		break;
-	case ID_BUTTON9:
+	   case ID_BUTTON9:
 		//catch
 		break;
-	case ID_BUTTON10:
+	   case ID_BUTTON10:
 		//release
 		break;		    
             default:
