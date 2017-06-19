@@ -11,6 +11,45 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+const double PI = 3.14159;
+
+double rad = PI / 180; // one radian 
+
+
+RECT drawArea = { 0, 0, 1500, 450 };
+const int RL = 300;         //lower arm length
+const int RU = 300;         // upper arm length
+
+int anglelow;        //lower arm angle
+int angleup;        //upper arm angle
+
+const int xbl = 200;        //coordinates for begining of lower arm
+const int ybl = 450;
+
+int x;   //coorinates for middle of the arm
+int y;
+
+
+int xeu;      //coordinates for ending of upper arm
+int yeu;
+
+
+
+//Points 
+//Lower arm
+Point lowerbegin(xbl, ybl);
+Point lowerend(x, y);
+//upper arm
+Point upperbegin(x, y);
+Point upperend(xeu, yeu);
+
+
+//buttons
+HWND g_hbutton;
+
+//record storage
+std::vector<int> recording;
+
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -61,6 +100,58 @@ void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
 	PaintSquares(hdc);
 	EndPaint(hWnd, &ps);
 }
+
+void start(HDC hdc)
+{
+	 anglelow = 270;
+	 angleup = 45;
+	 x = xbl + RL*cos(270 * rad);   //coorinates for middle of the arm
+	 y = ybl + RL*sin(270 * rad);
+
+	 xeu = x + RU*cos(45 * rad);  //coordinates for ending of upper arm
+	 yeu = y + RU*sin(45 * rad);
+	 
+	 MyOnPaint(hdc);
+	 PaintBackground(hdc);
+	 PaintSquares(hdc);
+}
+
+void lowerupmotion(int speed,int aup)
+{
+	anglelow = 270+speed;
+	angleup = 45+aup;
+	x = xbl + RL*cos(anglelow*rad);
+	y = ybl + RL*sin(anglelow*rad);
+}
+
+void lowerdownmotion(int speed,int aup)
+{
+	anglelow = 270 - speed;
+	angleup = 45 + aup;
+	x = xbl + RL*cos(anglelow*rad);
+	y = ybl + RL*sin(anglelow*rad);
+}
+
+void upperupmotion(int speed,int adown)
+{
+	anglelow = 270 + adown;
+	angleup = 45 + speed;
+	xeu = x + RU*cos(angleup*rad);
+	yeu = y + RU*sin(angleup*rad);
+}
+
+void upperdownmotion(int speed,int adown)
+{
+	anglelow = 270 + adown;
+	angleup = 45 - speed;
+	xbl + RL*cos(angleup*rad);
+	y = ybl + RL*sin(angleup*rad);
+}
+
+/*void Record(HDC hdc)
+{
+
+}*/
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -284,6 +375,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
+	    case ID_BUTTON1:
+		lowerupmotion(speed,aup);
+		repaintWindow(hWnd, hdc, ps, &drawArea);
+		break;
+	case ID_BUTTON2:
+		lowerdownmotion(speed,aup);
+		repaintWindow(hWnd, hdc, ps, &drawArea);
+		break;
+	case ID_BUTTON3:
+		upperupmotion(speed,adown);
+		repaintWindow(hWnd, hdc, ps, &drawArea);
+		break;
+	case ID_BUTTON4:
+		upperdownmotion(speed,adown);
+		repaintWindow(hWnd, hdc, ps, &drawArea);
+		break;
+        case ID_BUTTON5:
+	        speed++;
+		break;
+	case ID_BUTTON6:
+		speed--;
+		break;
+	case ID_BUTTON7:
+		//Record(hdc);//record
+		break;
+	case ID_BUTTON8:
+		//auto
+		break;
+	case ID_BUTTON9:
+		//catch
+		break;
+	case ID_BUTTON10:
+		//release
+		break;		    
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
@@ -294,14 +419,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
-	    PaintBackground(hdc);
-	    PaintSquares(hdc);
+	    start(hdc);
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    /*case WM_TIMER:
+	switch (wParam)
+	{
+	  case TIMER_1:	
+		break;
+	}*/	    
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
