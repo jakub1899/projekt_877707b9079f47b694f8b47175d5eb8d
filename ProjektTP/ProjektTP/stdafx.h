@@ -16,6 +16,11 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-
+#include <Unknwn.h>
 
 // TODO: reference additional headers your program requires here
+#include <gdiplus.h>
+#include <math.h>
+#include <cmath>
+#include <vector>
+using namespace Gdiplus;
