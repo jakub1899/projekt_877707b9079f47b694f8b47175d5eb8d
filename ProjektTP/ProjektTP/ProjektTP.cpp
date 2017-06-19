@@ -24,7 +24,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-
+    GdiplusStartupInput gdiplusStartupInput;
+	  ULONG_PTR           gdiplusToken;
+	  GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
     // TODO: Place code here.
 
     // Initialize global strings
@@ -51,7 +53,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-
+    GdiplusShutdown(gdiplusToken);
     return (int) msg.wParam;
 }
 
