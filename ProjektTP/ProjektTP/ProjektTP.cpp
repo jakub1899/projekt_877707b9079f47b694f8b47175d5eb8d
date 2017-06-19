@@ -102,6 +102,7 @@ void repaintWindow(HWND hWnd, HDC &hdc, PAINTSTRUCT &ps, RECT *drawArea)
 		InvalidateRect(hWnd, drawArea, TRUE); //repaint drawArea
 	hdc = BeginPaint(hWnd, &ps);
 	MyOnPaint(hdc);
+	PaintBackground(hdc);
 	PaintSquares(hdc);
 	EndPaint(hWnd, &ps);
 }
