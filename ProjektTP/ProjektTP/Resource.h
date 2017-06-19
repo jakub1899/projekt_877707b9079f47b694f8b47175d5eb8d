@@ -18,6 +18,19 @@
 #define IDC_STATIC				-1
 #endif
 // Next default values for new objects
+
+//buttons
+#define ID_BUTTON1				200
+#define ID_BUTTON2				201
+#define ID_BUTTON3				202
+#define ID_BUTTON4				203
+#define ID_BUTTON5				204
+#define ID_BUTTON6				205
+#define ID_BUTTON7				206
+#define ID_BUTTON8				207
+#define ID_BUTTON9				208
+#define ID_BUTTON10				209
+
 //
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
