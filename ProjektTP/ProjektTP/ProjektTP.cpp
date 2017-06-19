@@ -35,6 +35,7 @@ int yeu;
 
 
 
+/*
 //Points 
 //Lower arm
 Point lowerbegin(xbl, ybl);
@@ -42,7 +43,7 @@ Point lowerend(x, y);
 //upper arm
 Point upperbegin(x, y);
 Point upperend(xeu, yeu);
-
+*/
 
 //buttons
 HWND g_hbutton;
@@ -68,8 +69,8 @@ void MyOnPaint(HDC hdc)
 	Graphics lowerarm(hdc);
 	Graphics upperarm(hdc);
 	Pen pen(Color(255, 0, 0, 0), 5);
-	lowerarm.DrawLine(&pen, xbl,ybl,xel,yel);
-	upperarm.DrawLine(&pen, xbu, ybu, xeu, yeu);
+	lowerarm.DrawLine(&pen, xbl, ybl,x,y);
+	upperarm.DrawLine(&pen, x,y,xeu,yeu);
 }
 
 void PaintSquares(HDC hdc)
@@ -116,37 +117,38 @@ void start(HDC hdc)
 	 PaintSquares(hdc);
 }
 
-void lowerupmotion(int speed,int aup)
+void lowerupmotion(int speed, int adown, int aup)
 {
-	anglelow = 270+speed;
+	adown = 270+speed;
 	angleup = 45+aup;
-	x = xbl + RL*cos(anglelow*rad);
-	y = ybl + RL*sin(anglelow*rad);
+	x = xbl + RL*cos(adown*rad);
+	y = ybl + RL*sin(adown*rad);
 }
 
-void lowerdownmotion(int speed,int aup)
+void lowerdownmotion(int speed, int adown, int aup)
 {
-	anglelow = 270 - speed;
+	adown = 270 - speed;
 	angleup = 45 + aup;
-	x = xbl + RL*cos(anglelow*rad);
-	y = ybl + RL*sin(anglelow*rad);
+	x = xbl + RL*cos(adown*rad);
+	y = ybl + RL*sin(adown*rad);
 }
 
-void upperupmotion(int speed,int adown)
+void upperdownmotion(int speed, int adown, int aup)
 {
 	anglelow = 270 + adown;
-	angleup = 45 + speed;
-	xeu = x + RU*cos(angleup*rad);
-	yeu = y + RU*sin(angleup*rad);
+	aup = 45 + speed;
+	xeu = x + RU*cos(aup*rad);
+	yeu = y + RU*sin(aup*rad);
 }
 
-void upperdownmotion(int speed,int adown)
+void upperupmotion(int speed,int adown,int aup)
 {
 	anglelow = 270 + adown;
-	angleup = 45 - speed;
-	xbl + RL*cos(angleup*rad);
-	y = ybl + RL*sin(angleup*rad);
+	aup = 45 - speed;
+	xeu= x + RU*cos(aup*rad);
+	yeu = y + RU*sin(aup*rad);
 }
+
 
 /*void Record(HDC hdc)
 {
@@ -361,6 +363,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    PAINTSTRUCT ps;
+    HDC hdc;
+    int speed=1;         //speed of arm
+    int adown=anglelow;
+    int aup=angleup;
     switch (message)
     {
     case WM_COMMAND:
